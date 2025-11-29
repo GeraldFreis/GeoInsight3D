@@ -6,7 +6,7 @@ Inspiration:
     Neara's 3D infrastructure visualisation efforts.
 
 ### CSV Format:
-CSV files must be in the format of:
+CSV files must be in the typical LIDAR format of:
 X,Y,Z,Intensity
 
 With values similar to 
@@ -19,4 +19,6 @@ With values similar to
 12.90,33.45,30.50,10
 12.91,33.47,30.45,12
 ```
+
+In my test csv I have made ground be in the range of 80-200
 
