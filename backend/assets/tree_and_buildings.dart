@@ -25,9 +25,7 @@ List<String> generateTrees(int size, int count) {
         double trunkHeight = rnd(6, 12);
         double canopyZ = trunkHeight + rnd(2, 5);
 
-        // ------------------
-        // Trunk (vertical)
-        // ------------------
+        // trunk for trees
         for (double z = 0; z <= trunkHeight; z += 0.8) {
             out.add(lidarPoint(
                 x0 + rnd(-0.5, 0.5),
@@ -37,9 +35,7 @@ List<String> generateTrees(int size, int count) {
             ));
         }
 
-        // ------------------
-        // Canopy (sphere)
-        // ------------------
+        // canopy of trees
         const double r = 6.5;
 
         for (double x = -r; x <= r; x += 1) {
