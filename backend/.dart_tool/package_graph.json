@@ -1,0 +1,40 @@
+{
+  "roots": [
+    "backend"
+  ],
+  "packages": [
+    {
+      "name": "backend",
+      "version": "0.0.0",
+      "dependencies": [
+        "http_server",
+        "shared"
+      ],
+      "devDependencies": []
+    },
+    {
+      "name": "http_server",
+      "version": "1.0.0",
+      "dependencies": [
+        "mime",
+        "path"
+      ]
+    },
+    {
+      "name": "shared",
+      "version": "0.0.1",
+      "dependencies": []
+    },
+    {
+      "name": "path",
+      "version": "1.9.1",
+      "dependencies": []
+    },
+    {
+      "name": "mime",
+      "version": "1.0.6",
+      "dependencies": []
+    }
+  ],
+  "configVersion": 1
+}

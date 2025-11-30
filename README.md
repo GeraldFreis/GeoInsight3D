@@ -19,6 +19,16 @@ With values similar to
 12.90,33.45,30.50,10
 12.91,33.47,30.45,12
 ```
+### Use:
+run:
+```
+make run
+```
+This runs the server and frontend. A web application will open with a image like 
+![GeoInsight3D gravity well](Images/gravityWellExample.png)
+You can then rotate the lidar scan with your mouse's scroll feature, or drag. You can also select classes to highlight on the screen. Like so:
+![GeoInsight3D selecting classes](Images/selectClassesExample.png)
+The result will be something akin to:
 
-In my test csv I have made ground be in the range of 80-200
+
 

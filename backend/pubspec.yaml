@@ -1,0 +1,11 @@
+name: backend
+description: "Backend server for 3D point cloud"
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  shared:
+    path: ../shared
+  http_server: ^1.0.0
+  
