@@ -29,6 +29,7 @@ This runs the server and frontend. A web application will open with a image like
 You can then rotate the lidar scan with your mouse's scroll feature, or drag. You can also select classes to highlight on the screen. Like so:
 ![GeoInsight3D selecting classes](Images/selectClassesExample.png)
 The result will be something akin to:
+![GeoInsight3D selecting classes](Images/highGroundExample.png)
 
 
 
