@@ -40,7 +40,7 @@ Future<void> main() async {
             // lets parse the jawn
             final List<PointXYZ> point_cloud;
             if(_changed_points == false) {
-                point_cloud = await parseCustomPointCloud('../assets/test3.csv'); // I want to read the big one as base
+                point_cloud = await parseCustomPointCloud('../assets/test_well.csv'); // I want to read the big one as base
                 _cached_points = point_cloud;
             } else { 
                 point_cloud = _cached_points;
@@ -62,7 +62,7 @@ Future<void> main() async {
 
             if(!_cached_points.isEmpty){
 
-                final classes = await calculateLowAndHigh(_cached_points); // returns json object of class for each point
+                final classes = await calculateClasses(_cached_points); // returns json object of class for each point
                 
                 request.response
                     ..headers.contentType = ContentType.json

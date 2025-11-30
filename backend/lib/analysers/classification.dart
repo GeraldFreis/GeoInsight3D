@@ -42,7 +42,112 @@ List<double> findIntensities(List<PointXYZ> point_cloud) {
     return intensities;
 }
 
-Future<List<String>> calculateLowAndHigh(List<PointXYZ> point_cloud) async {
+double distance2D(PointXYZ a, PointXYZ b) {
+  return ((a.x - b.x) * (a.x - b.x) +
+          (a.y - b.y) * (a.y - b.y)).toDouble();
+}
+
+bool isTreeCanopyPoint(PointXYZ p) {
+  // Exact match to generator
+  return p.intensity >= 360 && p.intensity <= 520;
+}
+
+bool isTrunkPoint(PointXYZ p) {
+  // Exact match to generator
+  return p.intensity >= 45 && p.intensity <= 65;
+}
+
+bool isTree(PointXYZ point, List<PointXYZ> allPoints) {
+
+  // Only test canopy points
+  if (!isTreeCanopyPoint(point)) return false;
+
+  const double canopyRadius = 6.6;   // match r = 6.5
+  const double trunkRadius  = 1.2;   // slight freedom for jitter
+
+  int canopyHits = 0;
+  int trunkHits = 0;
+
+  for (var other in allPoints) {
+
+    final d = distance2D(point, other);
+
+    // --- canopy spherical shape ---
+    if (d <= canopyRadius && isTreeCanopyPoint(other)) {
+      if ((other.z - point.z).abs() < 4.0) {
+        canopyHits++;
+      }
+    }
+
+    // --- vertical trunk directly below canopy ---
+    if (d <= trunkRadius && isTrunkPoint(other)) {
+      if (other.z < point.z && (point.z - other.z) <= 15) {
+        trunkHits++;
+      }
+    }
+  }
+
+  // Tuned to your point density
+  return (canopyHits > 30 && trunkHits > 6);
+}
+
+bool isRoofPoint(PointXYZ p) {
+  return p.intensity >= 40 && p.intensity <= 60;
+}
+
+bool isWallPoint(PointXYZ p) {
+  return p.intensity > 60 && p.intensity <= 110;
+}
+
+// Are many neighbours at same height?  (Flat roof detection)
+bool hasFlatNeighbours(PointXYZ p, List<PointXYZ> all, double radius) {
+  int sameHeight = 0;
+
+  for (var o in all) {
+    if ((o.z - p.z).abs() < 0.4 &&
+        (o.x - p.x).abs() <= radius &&
+        (o.y - p.y).abs() <= radius) {
+      sameHeight++;
+    }
+  }
+
+  return sameHeight > 12; // roof size approx 10x10+
+}
+
+// Detect vertical columns (walls)
+bool hasVerticalChain(PointXYZ p, List<PointXYZ> all, double height) {
+  int count = 0;
+
+  for (var o in all) {
+    if ((o.x - p.x).abs() < 1 &&
+        (o.y - p.y).abs() < 1 &&
+        (o.z - p.z).abs() <= height &&
+        isWallPoint(o)) {
+      count++;
+    }
+  }
+
+  return count > 6; // enough to form wall
+}
+
+// Master building detector
+bool isBuilding(PointXYZ p, List<PointXYZ> all) {
+
+  // ROOF
+  if (isRoofPoint(p) && hasFlatNeighbours(p, all, 6)) {
+    return true;
+  }
+
+  // WALL
+  if (isWallPoint(p) && hasVerticalChain(p, all, 20)) {
+    return true;
+  }
+
+  return false;
+}
+
+
+Future<List<String>> calculateClasses(List<PointXYZ> point_cloud) async {
     List<String> classes = <String>[];
 
     List<double> elevations = findElevations(point_cloud);
@@ -53,6 +158,17 @@ Future<List<String>> calculateLowAndHigh(List<PointXYZ> point_cloud) async {
     // classifying land as high or low
 
     for(PointXYZ point in point_cloud) {
+
+        if (isTree(point, point_cloud)) {
+            classes.add("Tree");
+            continue;
+        }
+
+        if (isBuilding(point, point_cloud)) {
+            classes.add("Building");
+            continue;
+        }
+
         if(point.z <= low_land_threshold) {
             classes.add("Low");
         } else if(point.z >= high_land_threshold) {

@@ -165,7 +165,6 @@ class _HomePageState extends State<HomePage> {
                 DropdownMenuItem(value: "High", child: Text("High land")),
                 DropdownMenuItem(value: "Inconsequential", child: Text("Inconsequential")),
                 DropdownMenuItem(value: "Building", child: Text("Building")),
-                DropdownMenuItem(value: "Trees", child: Text("Trees")),
               ],
               onChanged: (value) {
                 setState(() {

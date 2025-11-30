@@ -46,6 +46,9 @@ class _PointCloudViewerState extends State<PointCloudViewer> {
       onPanUpdate: (d) {
         final dx = d.localPosition.dx - lastPos!.dx;
         final dy = d.localPosition.dy - lastPos!.dy;
+        
+        if (dx.abs() < 0.5 && dy.abs() < 0.5) return; // 👈 ignore tiny jitter
+
         lastPos = d.localPosition;
         setState(() {
           yaw += dx * 0.01;

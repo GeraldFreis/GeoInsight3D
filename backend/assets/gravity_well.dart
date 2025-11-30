@@ -29,7 +29,7 @@ List<String> generateFlatWithWell(int size, double wellRadius) {
       double intensity = rnd(250, 400);
       if (dist < wellRadius) {
         wellDepth = -30 * (1 - (dist / wellRadius)); // -30 at center, 0 at edge
-        intensity = rnd(40,60);
+        intensity = rnd(10,30);
       }
 
       // Small random terrain noise
@@ -55,13 +55,13 @@ List<String> generateBuildingsAroundWell(int size, double wellRadius) {
   for (int b = 0; b < 6; b++) {
     // place buildings outside the well radius
     double angle = rnd(0, 2 * pi);
-    double radius = wellRadius + rnd(10, 80); // distance from well
+    double radius = wellRadius + rnd(10, 40); // distance from well
     int x0 = (center + radius * cos(angle)).round();
     int y0 = (center + radius * sin(angle)).round();
 
     int w = rng.nextInt(15) + 10;
     int h = rng.nextInt(15) + 10;
-    double roofZ = rnd(5, 20);
+    double roofZ = rnd(6, 12);
 
     // Roof
     for (int i = 0; i < w; i++) {
@@ -69,21 +69,21 @@ List<String> generateBuildingsAroundWell(int size, double wellRadius) {
         out.add(lidarPoint(
           x0 + i,
           y0 + j,
-          roofZ + rnd(-0.2, 0.2),
-          rnd(40, 60),
+          roofZ + rnd(-0.15, 0.15),
+          rnd(45, 60),
         ));
       }
     }
 
     // Walls
-    for (int z = 0; z < roofZ.toInt(); z += 2) {
+    for (double z = 0; z < roofZ; z += 1.2) {
       for (int i = 0; i < w; i++) {
-        out.add(lidarPoint(x0 + i, y0, z, rnd(60, 110)));
-        out.add(lidarPoint(x0 + i, y0 + h, z, rnd(60, 110)));
+        out.add(lidarPoint(x0 + i, y0, z, rnd(65, 110)));
+        out.add(lidarPoint(x0 + i, y0 + h, z, rnd(65, 110)));
       }
       for (int j = 0; j < h; j++) {
-        out.add(lidarPoint(x0, y0 + j, z, rnd(60, 110)));
-        out.add(lidarPoint(x0 + w, y0 + j, z, rnd(60, 110)));
+        out.add(lidarPoint(x0, y0 + j, z, rnd(65, 110)));
+        out.add(lidarPoint(x0 + w, y0 + j, z, rnd(65, 110)));
       }
     }
   }
@@ -137,12 +137,12 @@ List<String> generateTrees(int numTrees, int terrainRows, int terrainCols) {
 // GENERATE FULL CSV
 // ===================================================================
 void generateFullCSV(String filename) {
-  const int size = 500;
-  const double wellRadius = 70.0;
+  const int size = 200;
+  const double wellRadius = 60.0;
 
   final grid = generateFlatWithWell(size, wellRadius);
   final buildings = generateBuildingsAroundWell(size, wellRadius);
-  final trees = generateTrees(5, 500, 500 );
+  final trees = generateTrees(5, 200, 200 );
   final all = [...grid, ...trees, ...buildings];
 
   File(filename).writeAsStringSync(all.join("\n"));
