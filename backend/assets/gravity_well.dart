@@ -1,3 +1,6 @@
+/*
+  gravity_well.dart generates a flat world with a well in the center and trees and buildings around it
+*/
 import 'dart:io';
 import 'dart:math';
 
@@ -11,9 +14,7 @@ String lidarPoint(num x, num y, num z, num i) =>
     "${z.toStringAsFixed(2)},"
     "${i.toStringAsFixed(0)}";
 
-// ===================================================================
-// FLAT GRID WITH GRAVITY WELL
-// ===================================================================
+
 List<String> generateFlatWithWell(int size, double wellRadius) {
   final out = <String>[];
   final center = size / 2;
@@ -45,9 +46,7 @@ List<String> generateFlatWithWell(int size, double wellRadius) {
   return out;
 }
 
-// ===================================================================
-// BUILDINGS AROUND THE WELL
-// ===================================================================
+
 List<String> generateBuildingsAroundWell(int size, double wellRadius) {
   final out = <String>[];
   final center = size / 2;
@@ -110,11 +109,11 @@ List<String> generateTrees(int numTrees, int terrainRows, int terrainCols) {
         x0.toDouble(),
         y0.toDouble(),
         z.toDouble(),
-        rnd(40, 60), // trunk darker
+        rnd(40, 60), // trunk low intensity
       ));
     }
 
-    // Canopy — simple circular cluster
+    // Canopy (cluster of high intensity points)
     for (double dx = -canopyRadius; dx <= canopyRadius; dx += 0.5) {
       for (double dy = -canopyRadius; dy <= canopyRadius; dy += 0.5) {
         if (dx * dx + dy * dy <= canopyRadius * canopyRadius) {
@@ -133,9 +132,7 @@ List<String> generateTrees(int numTrees, int terrainRows, int terrainCols) {
   return trees;
 }
 
-// ===================================================================
-// GENERATE FULL CSV
-// ===================================================================
+// generating full csv with flat well, buildings and trees
 void generateFullCSV(String filename) {
   const int size = 200;
   const double wellRadius = 60.0;
@@ -149,5 +146,5 @@ void generateFullCSV(String filename) {
 }
 
 void main() {
-  generateFullCSV("test_well.csv");
+  generateFullCSV("well_example.csv");
 }

@@ -42,28 +42,29 @@ List<double> findIntensities(List<PointXYZ> point_cloud) {
     return intensities;
 }
 
+// euclidean distance between points
 double distance2D(PointXYZ a, PointXYZ b) {
-  return ((a.x - b.x) * (a.x - b.x) +
+    return ((a.x - b.x) * (a.x - b.x) +
           (a.y - b.y) * (a.y - b.y)).toDouble();
 }
 
 bool isTreeCanopyPoint(PointXYZ p) {
-  // Exact match to generator
-  return p.intensity >= 360 && p.intensity <= 520;
+    // Exact match to generator
+    return p.intensity >= 360 && p.intensity <= 520;
 }
 
 bool isTrunkPoint(PointXYZ p) {
-  // Exact match to generator
-  return p.intensity >= 45 && p.intensity <= 65;
-}
+    // Exact match to generator
+    return p.intensity >= 45 && p.intensity <= 65;
+    }
 
-bool isTree(PointXYZ point, List<PointXYZ> allPoints) {
+    bool isTree(PointXYZ point, List<PointXYZ> allPoints) {
 
   // Only test canopy points
   if (!isTreeCanopyPoint(point)) return false;
 
   const double canopyRadius = 6.6;   // match r = 6.5
-  const double trunkRadius  = 1.2;   // slight freedom for jitter
+  const double trunkRadius  = 1.2;   // slight freedom for noise
 
   int canopyHits = 0;
   int trunkHits = 0;
@@ -87,47 +88,50 @@ bool isTree(PointXYZ point, List<PointXYZ> allPoints) {
     }
   }
 
-  // Tuned to your point density
+  // ensuring that we have a point density similar to what I actually use in generating trees
   return (canopyHits > 30 && trunkHits > 6);
 }
+/*
+    classifying buildings now
+*/
 
 bool isRoofPoint(PointXYZ p) {
-  return p.intensity >= 40 && p.intensity <= 60;
+    return p.intensity >= 40 && p.intensity <= 60;
 }
 
 bool isWallPoint(PointXYZ p) {
-  return p.intensity > 60 && p.intensity <= 110;
+    return p.intensity > 60 && p.intensity <= 110;
 }
 
-// Are many neighbours at same height?  (Flat roof detection)
+// neighbours of the same height
 bool hasFlatNeighbours(PointXYZ p, List<PointXYZ> all, double radius) {
-  int sameHeight = 0;
+    int same_height = 0;
 
-  for (var o in all) {
-    if ((o.z - p.z).abs() < 0.4 &&
-        (o.x - p.x).abs() <= radius &&
-        (o.y - p.y).abs() <= radius) {
-      sameHeight++;
+    for (var o in all) {
+        if ((o.z - p.z).abs() < 0.4 &&
+            (o.x - p.x).abs() <= radius &&
+            (o.y - p.y).abs() <= radius) {
+        same_height++;
+        }
     }
-  }
 
-  return sameHeight > 12; // roof size approx 10x10+
+    return same_height > 12; // roof size approx 10x10+
 }
 
 // Detect vertical columns (walls)
 bool hasVerticalChain(PointXYZ p, List<PointXYZ> all, double height) {
-  int count = 0;
+    int count = 0;
 
-  for (var o in all) {
-    if ((o.x - p.x).abs() < 1 &&
-        (o.y - p.y).abs() < 1 &&
-        (o.z - p.z).abs() <= height &&
-        isWallPoint(o)) {
-      count++;
+    for (var o in all) {
+        if ((o.x - p.x).abs() < 1 &&
+            (o.y - p.y).abs() < 1 &&
+            (o.z - p.z).abs() <= height &&
+            isWallPoint(o)) {
+        count++;
+        }
     }
-  }
 
-  return count > 6; // enough to form wall
+    return count > 6; // if a vertical chain greater than 6
 }
 
 // Master building detector
@@ -146,7 +150,7 @@ bool isBuilding(PointXYZ p, List<PointXYZ> all) {
   return false;
 }
 
-
+// checking if a point or set of points conform to low land, high land or buildings
 Future<List<String>> calculateClasses(List<PointXYZ> point_cloud) async {
     List<String> classes = <String>[];
 

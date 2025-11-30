@@ -1,3 +1,6 @@
+/*
+  data_generator.dart generates a generic lowland, midland and highland
+*/
 import 'dart:io';
 import 'dart:math';
 
@@ -11,9 +14,7 @@ String lidarPoint(num x, num y, num z, num i) =>
     "${z.toStringAsFixed(2)},"
     "${i.toStringAsFixed(0)}";
 
-// ===================================================================
-// LOW TERRAIN — near-flat ground
-// ===================================================================
+
 List<String> generateLow(int rows, int cols) {
   final out = <String>[];
   double lastZ = 1.0;
@@ -32,9 +33,7 @@ List<String> generateLow(int rows, int cols) {
   return out;
 }
 
-// ===================================================================
-// MEDIUM TERRAIN — continuous slope
-// ===================================================================
+
 List<String> generateMedium(int startX, int rows, int cols) {
   final out = <String>[];
 
@@ -57,9 +56,6 @@ List<String> generateMedium(int startX, int rows, int cols) {
   return out;
 }
 
-// ===================================================================
-// HIGH TERRAIN — mountains & trees
-// ===================================================================
 List<String> generateHigh(int startX, int rows, int cols) {
   final out = <String>[];
 
@@ -80,9 +76,6 @@ List<String> generateHigh(int startX, int rows, int cols) {
   return out;
 }
 
-// ===================================================================
-// BUILDINGS — placed inside low terrain region
-// ===================================================================
 List<String> generateBuildings() {
   final out = <String>[];
 

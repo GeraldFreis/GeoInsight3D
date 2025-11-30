@@ -36,6 +36,7 @@ Future<void> main() async {
             continue;
         }
 
+        // handling endpoints 
         if(request.uri.path == '/points') { // user wants us to pass the points back; like cmon man lets dig into it
             // lets parse the jawn
             await getPoints(request);
@@ -49,10 +50,10 @@ Future<void> main() async {
             
         } else {
 
-        request.response
-            ..statusCode = HttpStatus.notFound
-            ..write('Not found')
-            ..close();
+            request.response
+                ..statusCode = HttpStatus.notFound
+                ..write('Not found')
+                ..close();
 
         }
     }
